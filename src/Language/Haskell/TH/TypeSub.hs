@@ -5,7 +5,7 @@
 -- | and all explicitly kinded type variables are converted to implicitly kinded type
 -- | variables.
 module Language.Haskell.TH.TypeSub (
- subst_types_dec, 
+ sub_types_dec, 
  sub_type_dec, 
  sub_type_con, 
  sub_type,
@@ -20,7 +20,6 @@ import Data.List
 import Data.Generics.Uniplate.Data
 import Control.Applicative
 import Control.Monad
-import Debug.Trace.Helpers
 import Data.Tuple.Select
 
 -- | A result for partial functions
@@ -28,9 +27,9 @@ type Result a = Either String a
 
 -- | Create a new data declaration where the type variables have been subsituted with the 
 -- | supplied types. Returns an error if the more types the types are provided.
-subst_types_dec :: [Type] -> Dec -> Result Dec
-subst_types_dec types dec = do
-    let sub_type_dec' dec (n, t) = sub_type_dec t (VarT n) dec
+sub_types_dec :: [Type] -> Dec -> Result Dec
+sub_types_dec types dec = do
+    let sub_type_dec' dec' (n, t) = sub_type_dec t (VarT n) dec'
     names <- mapM (get_ty_var_name dec) [0..length types - 1] 
     return $ foldl' sub_type_dec' dec $ zip names types 
     
@@ -104,7 +103,7 @@ get_ty_var_name dec i = ty_var_name <$> get_value (get_ty_vars dec) i
 
 get_value :: [a] -> Int -> Result a
 get_value xs i | i < length xs = Right $ xs !! i
-get_value xs i | otherwise     = Left "Index out of bounds"
+get_value _ i | otherwise     = Left $ show i ++ " Index out of bounds"
 
 collect_vars :: Type -> [Type]
 collect_vars typ = [VarT n | VarT n <- universe typ]
@@ -122,10 +121,10 @@ third :: (c -> d) -> (a, b, c) -> (a, b, d)
 third f (x, y, z) = (x, y, f z)
     
 get_con_types :: Con -> [Type]
-get_con_types (NormalC n st) = map snd st
-get_con_types (RecC n st) = map sel3 st
-get_con_types (InfixC x n y) = map snd [x, y]
-get_con_types (ForallC t cxt con) = get_con_types con
+get_con_types (NormalC _ st) = map snd st
+get_con_types (RecC _ st) = map sel3 st
+get_con_types (InfixC x _ y) = map snd [x, y]
+get_con_types (ForallC _ _ con) = get_con_types con
 
 modify_types :: Con -> ([Type] -> [Type]) -> Con
 modify_types (NormalC n strict_types)  f = NormalC n $ uncurry zip $ (second f $ unzip strict_types)
@@ -133,7 +132,7 @@ modify_types (RecC n var_strict_types) f = RecC    n $ (\(x, y, z) -> zip3 x y z
 modify_types (InfixC x n y) f = result where
     [x', y'] = uncurry zip $ second f $ unzip [x, y]
     result = InfixC x' n y'
-modify_types (ForallC t cxt con) f = ForallC t cxt $ modify_types con f
+modify_types (ForallC t context con) f = ForallC t context $ modify_types con f
        
 has_var :: Name -> Type -> Bool
 has_var name typ = any (name==)  [ n | VarT n <- universe typ]

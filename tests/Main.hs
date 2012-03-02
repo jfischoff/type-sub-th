@@ -78,14 +78,36 @@ test_sub_type_con_0  = actual @?= expected where
     
 test_sub_type_dec_0  = actual @?= expected where
     actual        = sub_type_dec new_type old_type dec
-    expected      = DataD [] name [PlainTV $ mkName "a"] expected_cons 
-    dec           = DataD [] name [] cons
-    expected_cons = undefined
-    cons          = undefined
+    expected      = DataD [] name [] expected_cons []
+    dec           = DataD [] name [PlainTV $ mkName "a"] cons []
+    expected_cons = [NormalC (mkName "hey") $ map (NotStrict,)               
+                                [new_type, ConT $ mkName "w", new_type],
+                     RecC (mkName "hey")    $ map (mkName "hey", NotStrict, ) 
+                                [new_type, ConT $ mkName "w", new_type]]
+    cons          = [NormalC (mkName "hey") $ map (NotStrict,)               
+                        [old_type, ConT $ mkName "w", old_type],
+                     RecC (mkName "hey")    $ map (mkName "hey", NotStrict,) 
+                        [old_type, ConT $ mkName "w", old_type]]
     old_type      = AppT (ConT $ mkName "Int") (VarT $ mkName "a")
-    new_type      = TupleT 10        
+    new_type      = TupleT 10 
+    name          = mkName "yo"       
          
-test_sub_types_dec_0 = undefined
+test_sub_types_dec_0 = actual @?= Right expected where
+    actual        = sub_types_dec [new_type] dec
+    expected      = DataD [] name [] expected_cons []
+    dec           = DataD [] name [PlainTV $ mkName "a"] cons []
+    expected_cons = [NormalC (mkName "hey") $ map (NotStrict,)               
+                                [new_type, ConT $ mkName "w", new_type],
+                     RecC (mkName "hey")    $ map (mkName "hey", NotStrict, ) 
+                                [new_type, ConT $ mkName "w", new_type]]
+    cons          = [NormalC (mkName "hey") $ map (NotStrict,)               
+                        [old_type, ConT $ mkName "w", old_type],
+                     RecC (mkName "hey")    $ map (mkName "hey", NotStrict,) 
+                        [old_type, ConT $ mkName "w", old_type]]
+    old_type      = VarT $ mkName "a"
+    new_type      = TupleT 10 
+    name          = mkName "yo"       
+
 
 fromRight (Right x) = x
 
