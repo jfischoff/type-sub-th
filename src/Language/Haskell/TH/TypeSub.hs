@@ -113,7 +113,7 @@ make_ty_vars = map (PlainTV . from_right . get_type_name) . nub . collect_vars
 
 update_ty_vars :: Dec -> Dec 
 update_ty_vars (TySynD n _ t) = (TySynD n (make_ty_vars t) t)
-update_ty_vars dec = set_ty_vars dec $ concatMap make_ty_vars $ 
+update_ty_vars dec = set_ty_vars dec $ nub $ concatMap make_ty_vars $ 
     concatMap (get_con_types) $ get_cons dec
 
     

@@ -28,13 +28,6 @@
   (major1) == 4 && (major2) <  4 || \
   (major1) == 4 && (major2) == 4 && (minor) <= 1)
 
-/* package checkers-0.2.8 */
-#define VERSION_checkers "0.2.8"
-#define MIN_VERSION_checkers(major1,major2,minor) (\
-  (major1) <  0 || \
-  (major1) == 0 && (major2) <  2 || \
-  (major1) == 0 && (major2) == 2 && (minor) <= 8)
-
 /* package template-haskell-2.6.0.0 */
 #define VERSION_template_haskell "2.6.0.0"
 #define MIN_VERSION_template_haskell(major1,major2,minor) (\
@@ -62,13 +55,6 @@
   (major1) <  0 || \
   (major1) == 0 && (major2) <  2 || \
   (major1) == 0 && (major2) == 2 && (minor) <= 10)
-
-/* package th-instances-0.1.0.14 */
-#define VERSION_th_instances "0.1.0.14"
-#define MIN_VERSION_th_instances(major1,major2,minor) (\
-  (major1) <  0 || \
-  (major1) == 0 && (major2) <  1 || \
-  (major1) == 0 && (major2) == 1 && (minor) <= 0)
 
 /* package tuple-0.2.0.1 */
 #define VERSION_tuple "0.2.0.1"

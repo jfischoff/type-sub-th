@@ -7,7 +7,7 @@ Name:                type-sub-th
 -- The package version. See the Haskell package versioning policy
 -- (http://www.haskell.org/haskellwiki/Package_versioning_policy) for
 -- standards guiding when and how versions should be incremented.
-Version:             0.1.0.4
+Version:             0.1.0.6
 
 homepage: http://github.com/jfischoff/type-sub-th
 
@@ -78,5 +78,5 @@ Test-Suite tests
                  test-framework >= 0.4.1.1,
                  uniplate >= 1.6.5,
                  checkers >= 0.2.8,
-                 th-instances >= 0.1.0.14
-  
+                 th-instances >= 0.1.0.14,
+                 tuple >= 0.2.0.1
